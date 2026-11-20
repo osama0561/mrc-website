@@ -1,0 +1,42 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "osama-crm",
+  "main": "src/worker.js",
+  "compatibility_date": "2024-11-01",
+
+  // The frontend (public/) is embedded into worker/src/static-files.js and served
+  // directly by worker.js for every non-/api/* request — no ASSETS binding needed.
+
+  "d1_databases": [
+    {
+      "binding": "CRM_DB",
+      "database_name": "osama-crm",
+      "database_id": "57121124-b6f9-44f7-abe6-d7779670334c"
+    }
+  ],
+
+  "services": [
+    {
+      "binding": "SITE",
+      "service": "osama-site",
+      "entrypoint": "SheetAccess"
+    }
+  ],
+
+  "vars": {
+    "GOOGLE_SHEET_ID": "1jHrJquUnED6mPKZgKQ2KIvUL_gh6Xk8C3fIdPYw11Mk",
+    "ATMATHA_APPS_SHEET_ID": "",
+    "PUBLER_WORKSPACE_ID": ""
+  },
+
+  "triggers": {
+    "crons": ["*/10 * * * *"]
+  }
+
+  // Secrets (set with `wrangler secret put <NAME>`, never written here):
+  //   CRM_PASSWORD           - legacy bootstrap only; used once by POST /api/setup, already used
+  //   SESSION_SECRET         - signs the login session cookie
+  //   KIT_API_KEY            - optional, enables the Kit source snapshot
+  //   PUBLER_API_KEY         - optional, enables the Publer source snapshot
+  //   GOOGLE_SERVICE_ACCOUNT_JSON - only needed if not using the SITE service binding above
+}
